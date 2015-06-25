@@ -14,7 +14,9 @@ No need for constructor - destructor
 #define _AES_H
 
 #include <iostream>
+#include <stdint.h>
 
+typedef int32_t word;
 typedef unsigned char byte;
 
 using namespace std;
@@ -28,7 +30,9 @@ public:
 	// ~AES();
 	void encrypt();
 	void decrypt();
-	void printdetails();
+	void print(byte * data);
+   byte * plain();
+   byte * cipher();
 
 private:
 	byte plaintext[16];
@@ -43,6 +47,8 @@ private:
    //void clear();
 	void leftShift(int row);
    void gmix_column(int col);
+   void RotateWord(word * u);
+
 };
 
 

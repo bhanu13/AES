@@ -1,6 +1,7 @@
 #include "AES.h"
 #include "tables.h"
 
+
 AES::AES(byte * text, byte * newkey)
 {
 	for(int i = 0; i<16; i++)
@@ -33,14 +34,78 @@ void AES::encrypt()	//TODO
 	ShiftRows();
 	AddRoundKey(&(key_schedule[roundkey_ind]), ciphertext);
 	cout<<"Encryption Complete"<<endl;
+	print(ciphertext);
 }
 
 //=======================================
-void AES::KeyExpansion(byte * key_schedule)
+void AES::KeyExpansion(byte * key_schedule)	// Function broken - TODO - Fix
 {
+	for(int i = 0; i<4; i++)
+	{
+		for(int j = 0; j<4; j++)
+		{
+			key_schedule[4*i + j] = key[4*i + j];	
+		}
+	}
+
+	int i = 4;
 
 
+	while( i < (4 * 11))
+	{
+		word prev = 0;
+		for(int j = 0; j < 4; j++)
+		{
+			prev = prev << 8;
+			prev += key_schedule[(4*(i-1)) + j ];
+		}
+
+		word t = prev;
+		if(i % 4 == 0)
+		{
+			RotateWord(&t);
+			byte a[4];
+			for(int j = 0; j<4; j++)
+			{
+				a[j] = s[t & 0xff];
+				t = t>>8;
+			}
+			a[3] = a[3] ^ Rcon[(i/4)];
+			for(int j = 3; j>=0; j--)
+			{
+				t +=a[j];
+				t = t<<8;
+			}
+		}
+		word temp = 0;
+		for(int j = 0 ; j<4; j++)
+		{
+			temp = temp<<8;
+			temp += key_schedule[4*(i-4) + j];
+		}
+		byte result = t ^ temp;
+
+		//
+
+		for(int j = 0; j<4; j++)
+		{
+			key_schedule[4*i + j] = (result >> (3-i)*8) & 0xff;
+		}
+		// if(i % 4 == 3)
+		// 	print(&key_schedule[4*i]);
+
+		i++;
+	}
+	cout<<"KeyExpansion Printing"<<endl;
+	//print(&key_schedule[4*i]);
 }
+
+
+void AES::RotateWord(word * u)
+{
+	*u = ((*u)<<8) | ((*u)>>24);
+}
+
 
 //=======================================
 void AES::AddRoundKey(byte * currkey, byte * currtext)	//TODO
@@ -116,17 +181,26 @@ void AES::gmix_column(int col) // Done
 	ciphertext[4*3 + col] = b[3] ^ a[2] ^ a[1] ^ b[0] ^ a[0];
 }
 
-void AES::printdetails()
+void AES::print(byte * data)
 {
 	for(int i = 0; i < 16; i++)
 	{
 		if(i % 4 == 0)
 			cout<<endl;
-		printf("%02x ", ciphertext[i]);
+		printf("%02x ", data[i]);
 	}
 	cout<<endl;
 }
 
+byte * AES::plain()
+{
+	return plaintext;
+}
+
+byte * AES::cipher()
+{
+	return ciphertext;
+}
 
 
 //========================================

@@ -1,0 +1,235 @@
+Original Text
+ec e2 98 dc 
+ec e2 98 dc 
+ec e2 98 dc 
+ec e2 98 dc 
+After round 1
+
+ec e3 9a df 
+e8 e7 9e db 
+e4 eb 92 d7 
+e0 ef 96 d3 
+After SubBytes
+
+ce 11 b8 9e 
+9b 94 0b b9 
+69 e9 4f 0e 
+e1 df 90 66 
+ShiftRows
+
+ce 94 4f 66 
+9b e9 90 9e 
+69 df b8 b9 
+e1 11 0b 0e 
+After Mix Columns
+
+09 4a 6e 5e 
+03 67 f0 e8 
+a9 a6 0d b5 
+ef d0 f4 3e 
+After AddRoundKey
+
+df e0 1a a3 
+d1 c8 82 12 
+73 00 75 44 
+39 7b 82 c0 
+After SubBytes
+
+9e e1 a2 0a 
+3e e8 13 c9 
+8f 63 9d 1b 
+12 21 13 ba 
+ShiftRows
+
+9e e8 9d ba 
+3e 63 13 0a 
+8f 21 a2 c9 
+12 e1 13 1b 
+After Mix Columns
+
+23 53 82 a3 
+c0 c7 65 26 
+0d f9 b1 80 
+14 e5 f8 f2 
+After AddRoundKey
+
+95 c1 4d a8 
+a4 fa d8 d7 
+b3 62 74 80 
+7c d5 4b 0c 
+After SubBytes
+
+2a 78 e3 c2 
+49 2d 61 0e 
+6d aa 92 cd 
+10 03 b3 fe 
+ShiftRows
+
+2a 2d 92 fe 
+49 aa b3 c2 
+6d 03 e3 0e 
+10 78 61 cd 
+After Mix Columns
+
+4f 23 21 26 
+06 0a c3 5d 
+32 5b a1 4b 
+04 8e e6 a8 
+After AddRoundKey
+
+f9 dc 55 68 
+d4 c8 0a e2 
+5e 02 ad f4 
+00 e7 59 e9 
+After SubBytes
+
+99 86 fc 45 
+48 e8 67 98 
+58 77 95 bf 
+63 94 cb 1e 
+ShiftRows
+
+99 e8 95 1e 
+48 77 cb 45 
+58 94 fc 98 
+63 86 67 bf 
+After Mix Columns
+
+81 e8 62 f1 
+87 a5 7d ee 
+73 ec 9c ab 
+8f 62 f1 21 
+After AddRoundKey
+
+c6 1f 95 4d 
+12 90 43 ed 
+8a 80 ae 17 
+72 67 7c dc 
+After SubBytes
+
+b4 c0 2a e3 
+c9 60 1a 55 
+7e cd e4 f0 
+40 85 10 86 
+ShiftRows
+
+b4 60 e4 86 
+c9 cd 10 e3 
+7e 85 2a 55 
+40 c0 1a f0 
+After Mix Columns
+
+b1 c5 96 54 
+36 9b 1a 40 
+17 44 50 87 
+31 05 bf e1 
+After AddRoundKey
+
+8d 6f 35 bc 
+9f 04 87 ab 
+47 b7 ff d0 
+9c f3 9d 4b 
+After SubBytes
+
+5d a8 96 65 
+db f2 17 62 
+a0 a9 16 70 
+de 0d 5e b3 
+ShiftRows
+
+5d f2 16 b3 
+db a9 5e 65 
+a0 0d 96 62 
+de a8 17 70 
+After Mix Columns
+
+12 2b 4d 7e 
+76 15 61 4b 
+b8 79 3c a4 
+23 dc c8 26 
+After AddRoundKey
+
+4c 12 42 03 
+81 b3 f3 dd 
+1f 2c 01 65 
+29 7f d7 4d 
+After SubBytes
+
+29 c9 2c 7b 
+0c 6d 0d c1 
+c0 71 7c 4d 
+a5 d2 0e e3 
+ShiftRows
+
+29 6d 7c e3 
+0c 71 0e 7b 
+c0 d2 2c c1 
+a5 c9 0d 4d 
+After Mix Columns
+
+7a 94 82 b7 
+fe 87 ec 9d 
+1b ca 12 3c 
+51 76 a1 aa 
+After AddRoundKey
+
+6e 6d f2 ad 
+1d d8 0e 11 
+5f c0 cd 71 
+1f df 61 8c 
+After SubBytes
+
+9f 3c 89 95 
+a4 61 ab 82 
+cf ba bd a3 
+c0 9e ef 64 
+ShiftRows
+
+9f 61 bd 64 
+a4 ba ef 95 
+cf 9e 89 82 
+c0 3c ab a3 
+After Mix Columns
+
+5f e5 33 ae 
+fc 74 7f 93 
+37 ea c5 42 
+d7 fd 4f 91 
+After AddRoundKey
+
+18 a6 b4 9b 
+58 68 1a 2a 
+d7 fc 7f b6 
+79 42 35 43 
+After SubBytes
+
+ad 24 8d 14 
+6a 45 a2 e5 
+0e b0 d2 4e 
+b6 2c 96 1a 
+ShiftRows
+
+ad 45 d2 1a 
+6a b0 96 14 
+0e 2c 8d e5 
+b6 24 a2 4e 
+After Mix Columns
+
+46 50 79 4f 
+9d a4 d1 b0 
+00 3f 17 62 
+f7 4d 1f db 
+After AddRoundKey
+
+12 c9 4b 9e 
+6d 21 86 d8 
+10 ac fa fe 
+49 61 88 95 
+Encryption Complete
+
+da ec 30 55 
+df 05 8e 1c 
+39 e8 14 ea 
+76 f6 74 7e 
+
+Correct Encryption

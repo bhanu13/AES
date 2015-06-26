@@ -1,3 +1,7 @@
+/*
+Implementation of the functions declared in AES.h
+Author - bagarwa2
+*/
 #include "AES.h"
 #include "tables.h"
 
@@ -16,24 +20,30 @@ void AES::encrypt()	//TODO
 {
 	//int rounds = (keysize-128)/32 + 10;
 	byte key_schedule[16*11];
-	unsigned int roundkey_ind = 0;
-	print(ciphertext);
+	word roundkey_ind = 0;
+	// cout<<"Original Text"<<endl;
+	// print(ciphertext);
 
 	KeyExpansion(key_schedule);
 	AddRoundKey(&(key_schedule[roundkey_ind]), ciphertext);
 	roundkey_ind +=16;
-	print(ciphertext);
+	// cout<<"After round 1"<<endl;
+	// print(ciphertext);
 	for(int i = 0; i < 9; i++)
 	{
 		SubBytes();
-		print(ciphertext);
+		// cout<<"After SubBytes"<<endl;
+		// print(ciphertext);
 		ShiftRows();
-		print(ciphertext);
-		MixColumns();
-		// MixColumns(ciphertext);
-		print(ciphertext);
+		// cout<<"ShiftRows"<<endl;
+		// print(ciphertext);
+		// MixColumns();
+		MixColumns(ciphertext);
+		// cout<<"After Mix Columns"<<endl;
+		// print(ciphertext);
 		AddRoundKey(&(key_schedule[roundkey_ind]), ciphertext);
-		print(ciphertext);
+		// cout<<"After AddRoundKey"<<endl;
+		// print(ciphertext);
 		roundkey_ind += 16;
 
 	}
@@ -42,7 +52,7 @@ void AES::encrypt()	//TODO
 	ShiftRows();
 	AddRoundKey(&(key_schedule[roundkey_ind]), ciphertext);
 	cout<<"Encryption Complete"<<endl;
-	print(ciphertext);
+	// print(ciphertext);
 }
 
 //=======================================
@@ -133,7 +143,7 @@ word AES::RotateWord(word u)
 
 
 //=======================================
-void AES::AddRoundKey(byte * currkey, byte * currtext)	//TODO
+void AES::AddRoundKey(byte * currkey, byte * currtext)	//Done
 {
 	for(int i = 0; i < 4; i++)
 	{
@@ -180,44 +190,53 @@ void AES::leftShift(int row)	//Done
 	byte temp; 
 	for(int i = 0; i<row; i++)
 	{
-		temp = ciphertext[4*row + 0];
-		ciphertext[4*row + 0] = ciphertext[4*row + 1];
-		ciphertext[4*row + 1] = ciphertext[4*row + 2];
-		ciphertext[4*row + 2] = ciphertext[4*row + 3];
-		ciphertext[4*row + 3] = temp;	
+		temp = ciphertext[4*0 + row];
+		ciphertext[4*0 + row] = ciphertext[4*1 + row];
+		ciphertext[4*1 + row] = ciphertext[4*2 + row];
+		ciphertext[4*2 + row] = ciphertext[4*3 + row];
+		ciphertext[4*3 + row] = temp;	
 	}
 }
 
 //=======================================
-
-void AES::MixColumns()	// Done
+void AES::MixColumns(byte * result)
 {
+	byte state[16];
 	for(int i = 0; i<4; i++)
 	{
-		gmix_column(i);
+		for(int j = 0; j<4; j++)
+		{
+			state[4*i + j] = result[4*i + j];
+		}
 	}
-}
-
-void AES::gmix_column(int col) // Done
-{
-	byte a[4];
-	byte b[4];
-	byte temp;
-	for(int i =0; i<4; i++)
+	for(int i = 0; i < 4; i++)
 	{
-	    a[i] = ciphertext[4*i + col];
-	    temp = (byte)((signed char)ciphertext[i] >> 7); // arithmetic right shift, thus shifting in either zeros or ones
-	    b[i] = ciphertext[4*i + col] << 1; // implicitly removes high bit because b[c] is an 8-bit char, so we xor by 0x1b and not 0x11b in the next line
-	    b[i] ^= 0x1B & temp; // Rijndael's Galois field
+		word ind = i*4;
+		result[ind]   = Math(2, state[ind]) ^ Math(3, state[ind+1]) ^ state[ind+2] ^ state[ind+3];
+		result[ind+1] = state[ind] ^ Math(2, state[ind+1]) ^ Math(3, state[ind+2]) ^ state[ind+3];
+		result[ind+2] = state[ind] ^ state[ind+1] ^ Math(2, state[ind+2]) ^ Math(3, state[ind+3]);
+		result[ind+3] = Math(3, state[ind]) ^ state[ind+1] ^ state[ind+2] ^ Math(2, state[ind+3]);
 	}
-	ciphertext[4*0 + col] = b[0] ^ a[3] ^ a[2] ^ b[1] ^ a[1];
-	ciphertext[4*1 + col] = b[1] ^ a[0] ^ a[3] ^ b[2] ^ a[2];
-	ciphertext[4*2 + col] = b[2] ^ a[1] ^ a[0] ^ b[3] ^ a[3];        
-	ciphertext[4*3 + col] = b[3] ^ a[2] ^ a[1] ^ b[0] ^ a[0];
 }
 
+byte AES::Math(word mul, byte val)
+{
+	if(mul <= 2)
+		return xTime(val);
+	else
+		return Math(mul-1, val) ^ val;
+}
 
+byte AES::xTime(byte val)
+{
+	if(val & 0x80)
+		return val << 1;
+	else
+		return ((val << 1) ^ 0x1b);
+}
 
+//=======================================
+// A couple of helper functions
 void AES::print(byte * data)
 {
 	for(int i = 0; i < 16; i++)
@@ -228,6 +247,7 @@ void AES::print(byte * data)
 	}
 	cout<<endl;
 }
+
 void AES::printword(word u)
 {
 	for(int i = 0; i<4; i++)
@@ -249,85 +269,4 @@ byte * AES::cipher()
 }
 
 
-//=======================================
-// void AES::MixColumns(byte * result)
-// {
-// 	byte state[16];
-// 	for(int i = 0; i<4; i++)
-// 	{
-// 		for(int j = 0; j<4; j++)
-// 		{
-// 			state[4*i + j] = result[4*i + j]; //= s[ciphertext[i*4 + j]];
-// 		}
-// 	}
-// 	for(int i = 0; i < 4; i++)
-// 	{
-// 		int ind = (i*4);
-// 		result[ind]   = weirdMath(2, state[ind]) ^ weirdMath(3, state[ind+1]) ^ state[ind+2] ^ state[ind+3];
-// 		result[ind+1] = state[ind] ^ weirdMath(2, state[ind+1]) ^ weirdMath(3, state[ind+2]) ^ state[ind+3];
-// 		result[ind+2] = state[ind] ^ state[ind+1] ^ weirdMath(2, state[ind+2]) ^ weirdMath(3, state[ind+3]);
-// 		result[ind+3] = weirdMath(3, state[ind]) ^ state[ind+1] ^ state[ind+2] ^ weirdMath(2, state[ind+3]);
-// 	}
-// }
-
-// unsigned char AES::weirdMath(int mul, unsigned char val)
-// {
-// 	if(mul <= 2)
-// 		return xTime(val);
-// 	else
-// 		return weirdMath(mul-1, val) ^ val;
-// }
-
-// unsigned char AES::xTime(unsigned char val)
-// {
-// 	if(val & 0x80) {
-// 		return val << 1;
-// 	} else {
-// 		return ((val << 1) ^ 0x1b);
-// 	}
-// }
-
 //========================================
-// CODE DUMP
-//Removed Dynamic Memory Allocation for variable keysize
-
-/*
-AES::AES(byte (&text)[16], byte * newkey, int keysize)
-{
-	if(keysize != 128 || keysize != 192 || keysize != 256)
-	{
-		cout<<"Invalid keysize"<<endl;
-		key = NULL;
-		return;
-	}
-	else
-	{
-		for(int i = 0; i<16; i++)
-			plaintext[i] = text[i];
-		
-		key = new byte((keysize%8))
-		for(int i = 0; i<keysize%8; i++)
-		{
-			key[i] = newkey[i];
-		}
-	}
-}
-AES::~AES()
-{
-	clear();
-}
-
-
-void AES::clear()
-{
-	if(key != NULL)
-	{
-		for(int i = 0; i<(keysize%8); i++)
-			delete key[i];
-	}
-	key = NULL;
-	keysize = 0;
-}
-*/
-
-

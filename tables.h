@@ -1,6 +1,6 @@
 //tables.h
 
-// Look Up Tables
+// Look Up Tables used by the AES encryption algorihtm
 
 byte s[256] = 
 {

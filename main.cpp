@@ -1,10 +1,6 @@
 /*
-list of things that are working -
-ShiftRows()
-SubBytes()
-KeyExpansion()
-
-
+Testing 128 bit AES encryption
+using a sample message and key
 */
 
 
@@ -22,7 +18,6 @@ int main()
 						0xec, 0xe2, 0x98, 0xdc,
 						0xec, 0xe2, 0x98, 0xdc };
 	// Bug Finding - Testing All Functions Individually
-
 	// AES bug(message, key);
 	// bug.SubBytes();
 	// bug.ShiftRows();
@@ -47,5 +42,6 @@ int main()
 			}
 		}
 	}
-
+	test.print(test.cipher());
+	cout<<"Correct Encryption"<<endl;
 }

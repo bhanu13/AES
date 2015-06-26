@@ -3,11 +3,11 @@
 <p>Implementation of 128 bit AES Encryption & Decryption Algorithms in C++</p>
 https://en.wikipedia.org/wiki/Advanced_Encryption_Standard
 
-Complete:
-Encryption - Check out.txt for step by step transformation
+<b>Complete:</b>
+Encryption - Check out.txt for step by step transformation.<br>
 Look at AES.h and the implementation of encrypt() in .cpp
 
-TODO:
+<b>TODO:</b>
 Decryption
 
 Author - bagarwa2

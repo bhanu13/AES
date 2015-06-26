@@ -5,9 +5,11 @@
 AES::AES(byte * text, byte * newkey)
 {
 	for(int i = 0; i<16; i++)
+	{
 		plaintext[i] = text[i];
-	for(int i = 0; i<16; i++)
 		key[i] = newkey[i];
+		ciphertext[i] = text[i];
+	}
 }
 
 void AES::encrypt()	//TODO
@@ -15,17 +17,23 @@ void AES::encrypt()	//TODO
 	//int rounds = (keysize-128)/32 + 10;
 	byte key_schedule[16*11];
 	unsigned int roundkey_ind = 0;
+	print(ciphertext);
 
 	KeyExpansion(key_schedule);
-	AddRoundKey(&(key_schedule[roundkey_ind]), key);
+	AddRoundKey(&(key_schedule[roundkey_ind]), ciphertext);
 	roundkey_ind +=16;
-
+	print(ciphertext);
 	for(int i = 0; i < 9; i++)
 	{
 		SubBytes();
+		print(ciphertext);
 		ShiftRows();
+		print(ciphertext);
 		MixColumns();
+		// MixColumns(ciphertext);
+		print(ciphertext);
 		AddRoundKey(&(key_schedule[roundkey_ind]), ciphertext);
+		print(ciphertext);
 		roundkey_ind += 16;
 
 	}
@@ -38,7 +46,7 @@ void AES::encrypt()	//TODO
 }
 
 //=======================================
-void AES::KeyExpansion(byte * key_schedule)	// Function broken - TODO - Fix
+void AES::KeyExpansion(byte * key_schedule)	// Function Done
 {
 	for(int i = 0; i<4; i++)
 	{
@@ -59,51 +67,68 @@ void AES::KeyExpansion(byte * key_schedule)	// Function broken - TODO - Fix
 			prev = prev << 8;
 			prev += key_schedule[(4*(i-1)) + j ];
 		}
-
+		// cout<<"Printing Word"<<endl;
+		// printword(prev);
 		word t = prev;
+
 		if(i % 4 == 0)
 		{
-			RotateWord(&t);
+			t = RotateWord(t);
+
 			byte a[4];
 			for(int j = 0; j<4; j++)
 			{
-				a[j] = s[t & 0xff];
+				a[j] = s[(byte)(t & 0xff)];
 				t = t>>8;
+				//printf("%02x ", a[j]);
 			}
+			//cout<<endl;
 			a[3] = a[3] ^ Rcon[(i/4)];
+			// cout << (int)Rcon[(i/4)] << "Rcon val"<<endl;
+			// printf("%02x ", a[3]);
+			// cout<<endl;
+
+			t = 0;
 			for(int j = 3; j>=0; j--)
 			{
-				t +=a[j];
 				t = t<<8;
+				t = t + a[j];
 			}
 		}
+		// if(i == 8)
+		// {
+		// 	printword(t);
+		// 	cout<< " Checking value" <<endl;
+		// }
+			
+
 		word temp = 0;
 		for(int j = 0 ; j<4; j++)
 		{
 			temp = temp<<8;
 			temp += key_schedule[4*(i-4) + j];
 		}
-		byte result = t ^ temp;
-
-		//
+		word result = t ^ temp;
 
 		for(int j = 0; j<4; j++)
 		{
-			key_schedule[4*i + j] = (result >> (3-i)*8) & 0xff;
+			key_schedule[4*i + j] = (result >> 24) & 0xff;
+			result = result << 8;
 		}
 		// if(i % 4 == 3)
 		// 	print(&key_schedule[4*i]);
 
 		i++;
+		// break;
 	}
-	cout<<"KeyExpansion Printing"<<endl;
-	//print(&key_schedule[4*i]);
+	// cout<<"KeyExpansion Printing"<<endl;
+	// print(key_schedule);
+	// print(&key_schedule[16]);
 }
 
-
-void AES::RotateWord(word * u)
+word AES::RotateWord(word u)
 {
-	*u = ((*u)<<8) | ((*u)>>24);
+	return ((u<<8) | (u>>24));
 }
 
 
@@ -123,11 +148,20 @@ void AES::AddRoundKey(byte * currkey, byte * currtext)	//TODO
 //====================================
 void AES::SubBytes()	//Done
 {
-	for(int i = 0; i<16; i++)
+	byte temp[16];
+	for(int i = 0; i<4; i++)
 	{
-		int col = ciphertext[i] & 0x0f;
-		int row = ciphertext[i] & 0xf0;
-		ciphertext[i] = s[row*4 + col];
+		for(int j = 0; j<4; j++)
+		{
+			temp[4*i + j] = ciphertext[4*i + j]; //= s[ciphertext[i*4 + j]];
+		}
+	}
+	for(int i = 0; i<4; i++)
+	{
+		for(int j = 0; j<4; j++)
+		{
+			ciphertext[4*i + j] = s[temp[i*4 + j]];
+		}
 	}
 }
 
@@ -155,6 +189,7 @@ void AES::leftShift(int row)	//Done
 }
 
 //=======================================
+
 void AES::MixColumns()	// Done
 {
 	for(int i = 0; i<4; i++)
@@ -181,6 +216,8 @@ void AES::gmix_column(int col) // Done
 	ciphertext[4*3 + col] = b[3] ^ a[2] ^ a[1] ^ b[0] ^ a[0];
 }
 
+
+
 void AES::print(byte * data)
 {
 	for(int i = 0; i < 16; i++)
@@ -188,6 +225,15 @@ void AES::print(byte * data)
 		if(i % 4 == 0)
 			cout<<endl;
 		printf("%02x ", data[i]);
+	}
+	cout<<endl;
+}
+void AES::printword(word u)
+{
+	for(int i = 0; i<4; i++)
+	{
+		printf("%02x ", (byte)((u>>24)&0xff));
+		u = u<<8;		
 	}
 	cout<<endl;
 }
@@ -202,6 +248,44 @@ byte * AES::cipher()
 	return ciphertext;
 }
 
+
+//=======================================
+// void AES::MixColumns(byte * result)
+// {
+// 	byte state[16];
+// 	for(int i = 0; i<4; i++)
+// 	{
+// 		for(int j = 0; j<4; j++)
+// 		{
+// 			state[4*i + j] = result[4*i + j]; //= s[ciphertext[i*4 + j]];
+// 		}
+// 	}
+// 	for(int i = 0; i < 4; i++)
+// 	{
+// 		int ind = (i*4);
+// 		result[ind]   = weirdMath(2, state[ind]) ^ weirdMath(3, state[ind+1]) ^ state[ind+2] ^ state[ind+3];
+// 		result[ind+1] = state[ind] ^ weirdMath(2, state[ind+1]) ^ weirdMath(3, state[ind+2]) ^ state[ind+3];
+// 		result[ind+2] = state[ind] ^ state[ind+1] ^ weirdMath(2, state[ind+2]) ^ weirdMath(3, state[ind+3]);
+// 		result[ind+3] = weirdMath(3, state[ind]) ^ state[ind+1] ^ state[ind+2] ^ weirdMath(2, state[ind+3]);
+// 	}
+// }
+
+// unsigned char AES::weirdMath(int mul, unsigned char val)
+// {
+// 	if(mul <= 2)
+// 		return xTime(val);
+// 	else
+// 		return weirdMath(mul-1, val) ^ val;
+// }
+
+// unsigned char AES::xTime(unsigned char val)
+// {
+// 	if(val & 0x80) {
+// 		return val << 1;
+// 	} else {
+// 		return ((val << 1) ^ 0x1b);
+// 	}
+// }
 
 //========================================
 // CODE DUMP

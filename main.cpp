@@ -1,3 +1,12 @@
+/*
+list of things that are working -
+ShiftRows()
+SubBytes()
+KeyExpansion()
+
+
+*/
+
 
 #include "AES.h"
 
@@ -12,6 +21,12 @@ int main()
 						0xec, 0xe2, 0x98, 0xdc,
 						0xec, 0xe2, 0x98, 0xdc,
 						0xec, 0xe2, 0x98, 0xdc };
+	// Bug Finding - Testing All Functions Individually
+
+	// AES bug(message, key);
+	// bug.SubBytes();
+	// bug.ShiftRows();
+	// bug.print(bug.cipher());
 
 	byte expected_res[16] = {
 						0xda, 0xec, 0x30, 0x55,
@@ -28,7 +43,9 @@ int main()
 			if((test.cipher())[4*i + j] != expected_res[4*i + j])
 			{				
 				cout<<"Incorrect Encryption"<<endl;
-				return 0;			}
+				return 0;			
+			}
 		}
 	}
+
 }

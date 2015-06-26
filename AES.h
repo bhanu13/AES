@@ -16,7 +16,7 @@ No need for constructor - destructor
 #include <iostream>
 #include <stdint.h>
 
-typedef int32_t word;
+typedef uint32_t word;
 typedef unsigned char byte;
 
 using namespace std;
@@ -34,7 +34,7 @@ public:
    byte * plain();
    byte * cipher();
 
-private:
+//private:
 	byte plaintext[16];
 	byte ciphertext[16];
 	byte key[16];
@@ -47,7 +47,15 @@ private:
    //void clear();
 	void leftShift(int row);
    void gmix_column(int col);
-   void RotateWord(word * u);
+   word RotateWord(word u);
+   void printword(word u);
+   //===============Testing
+   // void MixColumns(byte * result);
+   // unsigned char weirdMath(int mul, unsigned char val);
+   // unsigned char xTime(unsigned char val);
+
+
+
 
 };
 

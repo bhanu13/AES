@@ -4,7 +4,7 @@
 https://en.wikipedia.org/wiki/Advanced_Encryption_Standard
 
 <p align = "center"><b>The Encryption Algo</b></p>
-<img src = "encryption_algo.png" align = "middle">
+<img src = "encryption_algo.png" align = "center">
 
 <b>Complete:</b>
 Encryption - Check out.txt for step by step transformation.<br>
